@@ -220,7 +220,7 @@ python ProSyncReader.py
 
 ## Lizenz
 
-CC BY-NC 4.0 - Siehe [LICENSE](LICENSE)
+MIT License - Siehe [LICENSE](LICENSE)
 
 ---
 
