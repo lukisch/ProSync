@@ -1,0 +1,11 @@
+# ProSync Requirements
+# Version: 3.1
+# Python: >= 3.8
+
+# Core Dependencies
+PyQt6>=6.4.0
+
+# Optional: ProSyncReader Dependencies
+# Uncomment if you need PDF/DOCX preview functionality
+# PyPDF2>=3.0.0
+# python-docx>=0.8.11
