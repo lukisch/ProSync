@@ -61,6 +61,13 @@ Thumbs.db
 .DS_Store
 ehthumbs.db
 
+# ---- Planung & Interne Doku ----
+PLAN.txt
+
+# ---- Private / Archive ----
+_archive/
+_private/
+
 # ---- Projektspezifisch (hier eigene Eintraege anfuegen) ----
 
 # ---- Entwicklungs- und Backup-Ordner ----
