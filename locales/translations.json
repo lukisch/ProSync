@@ -1,0 +1,54 @@
+{
+  "<b>🛡️ Datei-Sicherheit (V3.1)</b>": {
+    "de": "<b>🛡️ Datei-Sicherheit (V3.1)</b>",
+    "en": "<b>🛡️ File Security (V3.1)</b>"
+  },
+  "<b>🛡️ Datenbank-Sicherheitsprüfung (V3)</b>": {
+    "de": "<b>🛡️ Datenbank-Sicherheitsprüfung (V3)</b>",
+    "en": "<b>🛡️ Database Security Check (V3)</b>"
+  },
+  "Datei synchronisieren": {
+    "de": "Datei synchronisieren",
+    "en": "Synchronize File"
+  },
+  "Hinzufügen": {
+    "de": "Hinzufügen",
+    "en": "Add"
+  },
+  "Wähle eine Aufgabe...": {
+    "de": "Wähle eine Aufgabe...",
+    "en": "Select a task..."
+  },
+  "[Bilddatei - Vorschau nicht implementiert]": {
+    "de": "[Bilddatei - Vorschau nicht implementiert]",
+    "en": "[Image file - preview not implemented]"
+  },
+  "[Datei ist leer oder Inhalt nicht lesbar]": {
+    "de": "[Datei ist leer oder Inhalt nicht lesbar]",
+    "en": "[File is empty or content not readable]"
+  },
+  "▶ Start Sync": {
+    "de": "▶ Start Sync",
+    "en": "▶ Start Sync"
+  },
+  "⚠ Bitte gültige Quelldatei angeben!": {
+    "de": "⚠ Bitte gültige Quelldatei angeben!",
+    "en": "⚠ Please specify a valid source file!"
+  },
+  "⚠ Bitte gültiges Quellverzeichnis angeben!": {
+    "de": "⚠ Bitte gültiges Quellverzeichnis angeben!",
+    "en": "⚠ Please specify a valid source directory!"
+  },
+  "✓ Keine Datenbanken gefunden.\\nStandard-Einstellungen sind sicher.": {
+    "de": "✓ Keine Datenbanken gefunden.\\nStandard-Einstellungen sind sicher.",
+    "en": "✓ No databases found.\\nDefault settings are safe."
+  },
+  "🔍 Datei analysieren": {
+    "de": "🔍 Datei analysieren",
+    "en": "🔍 Analyze File"
+  },
+  "🛡️ Sicherheitsprüfung": {
+    "de": "🛡️ Sicherheitsprüfung",
+    "en": "🛡️ Security Check"
+  }
+}
