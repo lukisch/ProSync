@@ -1,20 +1,20 @@
 # ProSync
 
-Intelligente Backup-Synchronisation mit Datenbank-Sicherheit.
+Intelligent backup synchronization with database safety.
 
 ## Features
 
-- **Ordner-Synchronisation** (Ein-Weg / Zwei-Wege)
-- **Datei-Synchronisation** für einzelne Dateien
-- **Automatische Datenbank-Erkennung** und -Schutz
-- **WAL-Checkpoint** für SQLite-Dateien vor dem Kopieren
-- **System-Tray Integration** für Hintergrund-Betrieb
-- **Zeitgesteuerte Backups** mit konfigurierbaren Intervallen
-- **Datenbank-Indexierung** für Suche und Versionierung (optional)
+- **Folder Synchronization** (one-way / two-way)
+- **File Synchronization** for individual files
+- **Automatic Database Detection** and protection
+- **WAL Checkpoint** for SQLite files before copying
+- **System Tray Integration** for background operation
+- **Scheduled Backups** with configurable intervals
+- **Database Indexing** for search and versioning (optional)
 
 ## Screenshots
 
-![Hauptfenster](screenshots/main.png)
+![Main Window](screenshots/main.png)
 
 ## Installation
 
@@ -22,114 +22,114 @@ Intelligente Backup-Synchronisation mit Datenbank-Sicherheit.
 pip install -r requirements.txt
 ```
 
-### Benötigte Pakete
+### Required Packages
 
 - PyQt6
-- (Optional) PyPDF2 für PDF-Vorschau im Reader
-- (Optional) python-docx für Word-Vorschau im Reader
+- (Optional) PyPDF2 for PDF preview in Reader
+- (Optional) python-docx for Word preview in Reader
 
-## Verwendung
+## Usage
 
-### Über Python
+### Via Python
 
 ```bash
 python ProSyncStart_V3.1.py
 ```
 
-### Über Batch-Datei
+### Via Batch File
 
 ```bash
 START.bat
 ```
 
-Die Anwendung startet im System-Tray. Rechtsklick auf das Icon für Optionen.
+The application starts in the system tray. Right-click the icon for options.
 
-## Synchronisationsmodi
+## Synchronization Modes
 
-| Modus | Beschreibung | Anwendungsfall |
-|-------|-------------|----------------|
-| **mirror** | Ziel = exakte Kopie der Quelle | Vollständiges Backup |
-| **update** | Nur neuere Dateien übertragen | Inkrementelles Backup |
-| **two_way** | Bidirektionale Synchronisation | Sync zwischen zwei Arbeitsplätzen |
-| **one_way** | Nur Quelle → Ziel, keine Löschungen | Sichere Archivierung |
-| **index_only** | Nur Indexierung, kein Kopieren | Dateiverwaltung ohne Sync |
+| Mode | Description | Use Case |
+|------|-------------|----------|
+| **mirror** | Target = exact copy of source | Full backup |
+| **update** | Transfer only newer files | Incremental backup |
+| **two_way** | Bidirectional synchronization | Sync between two workstations |
+| **one_way** | Source → target only, no deletions | Safe archiving |
+| **index_only** | Indexing only, no copying | File management without sync |
 
-## Beispiel-Szenarien
+## Example Scenarios
 
-### 1. Backup eines Projektordners
+### 1. Project Folder Backup
 
-**Aufgabe:** Tägliches Backup eines Entwicklungsprojekts
+**Task:** Daily backup of a development project
 
-**Konfiguration:**
-- **Quelle:** `C:\Projekte\MeinProjekt`
-- **Ziel:** `D:\Backups\MeinProjekt`
-- **Modus:** `mirror`
-- **Zeitgesteuert:** Täglich um 18:00 Uhr
-- **Indexierung:** Aktiviert (für Suche)
+**Configuration:**
+- **Source:** `C:\Projekte\MeinProjekt`
+- **Target:** `D:\Backups\MeinProjekt`
+- **Mode:** `mirror`
+- **Scheduled:** Daily at 6:00 PM
+- **Indexing:** Enabled (for search)
 
-**Ergebnis:** Vollständiges Backup mit Dateiversionierung und Suchfunktion
+**Result:** Complete backup with file versioning and search functionality
 
-### 2. Synchronisation zwischen Laptop und Desktop
+### 2. Synchronization Between Laptop and Desktop
 
-**Aufgabe:** Dateien zwischen zwei PCs synchronisieren
+**Task:** Synchronize files between two PCs
 
-**Konfiguration:**
-- **Quelle:** `C:\Dokumente`
-- **Ziel:** `\\Desktop-PC\Dokumente`
-- **Modus:** `two_way`
-- **Zeitgesteuert:** Alle 30 Minuten
-- **Konfliktauflösung:** `newest` (neueste Datei gewinnt)
+**Configuration:**
+- **Source:** `C:\Dokumente`
+- **Target:** `\\Desktop-PC\Dokumente`
+- **Mode:** `two_way`
+- **Scheduled:** Every 30 minutes
+- **Conflict Resolution:** `newest` (newest file wins)
 
-**Ergebnis:** Bidirektionale Sync, beide PCs haben immer die neuesten Dateien
+**Result:** Bidirectional sync, both PCs always have the latest files
 
-### 3. Datenbank-Backup (SQLite mit WAL-Modus)
+### 3. Database Backup (SQLite with WAL Mode)
 
-**Aufgabe:** Sichere Sicherung einer SQLite-Datenbank
+**Task:** Safe backup of a SQLite database
 
-**Konfiguration:**
-- **Typ:** Datei-Verbindung (nicht Ordner!)
-- **Quelle:** `C:\App\data.db`
-- **Ziel:** `D:\Backups\data.db`
-- **Modus:** `one_way`
-- **WAL-Checkpoint:** Aktiviert
-- **Zeitgesteuert:** Alle 4 Stunden
+**Configuration:**
+- **Type:** File connection (not folder!)
+- **Source:** `C:\App\data.db`
+- **Target:** `D:\Backups\data.db`
+- **Mode:** `one_way`
+- **WAL Checkpoint:** Enabled
+- **Scheduled:** Every 4 hours
 
-**Ergebnis:** Konsistente DB-Backups ohne Korruption
+**Result:** Consistent DB backups without corruption
 
-## Datenbank-Schutz (V3.1)
+## Database Protection (V3.1)
 
-ProSync erkennt automatisch kritische Datenbanken und wendet sichere Einstellungen an:
+ProSync automatically detects critical databases and applies safe settings:
 
-### Unterstützte Datenbanktypen
+### Supported Database Types
 
 - **SQLite** (.sqlite, .sqlite3, .db, .db3)
 - **MS Access** (.mdb, .accdb)
 
-### Automatische Schutzmaßnahmen
+### Automatic Safety Measures
 
-#### Für Ordner-Verbindungen:
-- Kritische DBs (im WAL-Modus) werden **automatisch ausgeschlossen**
-- WAL-Dateien (.db-wal, .db-shm, .db-journal) werden **nie kopiert**
-- Empfehlung: Erstelle **Datei-Verbindungen** für einzelne DBs
+#### For Folder Connections:
+- Critical DBs (in WAL mode) are **automatically excluded**
+- WAL files (.db-wal, .db-shm, .db-journal) are **never copied**
+- Recommendation: Create **file connections** for individual DBs
 
-#### Für Datei-Verbindungen:
-- **WAL-Checkpoint** wird automatisch aktiviert
-- **One-Way Modus** wird empfohlen
-- Checkpoint vor jedem Kopiervorgang
+#### For File Connections:
+- **WAL Checkpoint** is automatically enabled
+- **One-way mode** is recommended
+- Checkpoint before each copy operation
 
-### Was ist WAL-Checkpoint?
+### What is WAL Checkpoint?
 
-WAL (Write-Ahead Logging) speichert SQLite-Änderungen in einer separaten `-wal` Datei.
-Ein Checkpoint merged diese Änderungen zurück in die Haupt-DB-Datei.
+WAL (Write-Ahead Logging) stores SQLite changes in a separate `-wal` file.
+A checkpoint merges these changes back into the main DB file.
 
-**Ohne Checkpoint:** Inkonsistente Backups möglich!
-**Mit Checkpoint:** Garantiert konsistente DB-Kopie.
+**Without checkpoint:** Inconsistent backups possible!
+**With checkpoint:** Guarantees a consistent DB copy.
 
-## Konfigurationsdatei
+## Configuration File
 
-`ProSync_config.json` - Wird automatisch erstellt und verwaltet.
+`ProSync_config.json` - Automatically created and managed.
 
-### Beispiel (Ordner-Verbindung):
+### Example (Folder Connection):
 
 ```json
 {
@@ -154,7 +154,7 @@ Ein Checkpoint merged diese Änderungen zurück in die Haupt-DB-Datei.
 }
 ```
 
-### Beispiel (Datei-Verbindung):
+### Example (File Connection):
 
 ```json
 {
@@ -178,84 +178,62 @@ Ein Checkpoint merged diese Änderungen zurück in die Haupt-DB-Datei.
 
 ## ProSyncReader
 
-Separates Tool zum Durchsuchen der Sync-Datenbanken.
+A separate tool for searching the sync databases.
 
 ```bash
 python ProSyncReader.py
 ```
 
 **Features:**
-- Volltext-Suche in synchronisierten Dateien
-- Tag-basierte Suche
-- Datei-Vorschau (PDF, DOCX)
-- Direktes Öffnen von Dateien/Ordnern
+- Full-text search in synchronized files
+- Tag-based search
+- File preview (PDF, DOCX)
+- Direct opening of files/folders
 
-## Tipps & Best Practices
+## Tips & Best Practices
 
 ### ✅ DO:
-- Nutze **Datei-Verbindungen** für einzelne Datenbanken
-- Aktiviere **WAL-Checkpoint** für SQLite-DBs
-- Teste neue Verbindungen mit einem **manuellen Sync** zuerst
-- Nutze **exclude_patterns** für temporäre Dateien
+- Use **file connections** for individual databases
+- Enable **WAL Checkpoint** for SQLite DBs
+- Test new connections with a **manual sync** first
+- Use **exclude_patterns** for temporary files
 
 ### ❌ DON'T:
-- Verwende **kein two_way** für kritische Datenbanken
-- Synchronisiere **keine laufenden** Anwendungen
-- Kopiere **keine .db-wal** Dateien manuell
-- Nutze **kein mirror** wenn du keine Löschungen willst
+- Use **two_way** for critical databases
+- Synchronize **running** applications
+- Copy **.db-wal** files manually
+- Use **mirror** if you don't want deletions
 
 ## Troubleshooting
 
-### "Checkpoint fehlgeschlagen"
-➡️ Datenbank ist gerade geöffnet/gelockt. Schließe die Anwendung oder erhöhe den Timeout.
+### "Checkpoint failed"
+➡️ Database is currently open/locked. Close the application or increase the timeout.
 
-### "Sync bleibt hängen"
-➡️ Große Dateien oder langsame Netzwerkverbindung. Nutze `update` statt `mirror` für schnellere Syncs.
+### "Sync hangs"
+➡️ Large files or slow network connection. Use `update` instead of `mirror` for faster syncs.
 
-### "Datei wurde ausgeschlossen"
-➡️ Prüfe `exclude_patterns` in der Config. Kritische DBs werden automatisch ausgeschlossen (bei Ordner-Verbindungen).
+### "File was excluded"
+➡️ Check `exclude_patterns` in the config. Critical DBs are automatically excluded (for folder connections).
 
-## System-Tray Befehle
+## System Tray Commands
 
-- **Linksklick:** Hauptfenster öffnen
-- **Rechtsklick → Ausführen:** Verbindung manuell starten
-- **Rechtsklick → Automatisch ausführen:** Zeitgesteuerte Sync aktivieren
-- **Rechtsklick → Beenden:** ProSync beenden
+- **Left-click:** Open main window
+- **Right-click → Run:** Start connection manually
+- **Right-click → Auto-run:** Enable scheduled sync
+- **Right-click → Exit:** Quit ProSync
 
-## Lizenz
+## License
 
-GPL v3 - Siehe [LICENSE](LICENSE)
+GPL v3 - See [LICENSE](LICENSE)
 
-Dieses Projekt verwendet PyQt6 (GPL).
+This project uses PyQt6 (GPL).
 
 ---
 
 **Version:** 3.1
-**Autor:** Lukas Geiger
-**Letzte Aktualisierung:** Februar 2026
+**Author:** Lukas Geiger
+**Last Updated:** February 2026
 
 ---
 
-## English
-
-Intelligent backup synchronization with database safety features and WAL checkpoint support.
-
-### Features
-
-- Smart backup sync
-- Database-aware (WAL checkpoint)
-- Incremental backups
-- Conflict resolution
-
-### Installation
-
-```bash
-git clone https://github.com/lukisch/REL-PUB_ProSync.git
-cd REL-PUB_ProSync
-pip install -r requirements.txt
-python "ProSyncStart_V3.1.py"
-```
-
-### License
-
-See [LICENSE](LICENSE) for details.
+Deutsche Version: [README.de.md](README.de.md)
