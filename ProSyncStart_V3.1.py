@@ -925,6 +925,7 @@ class FolderSyncWorker(QThread):
     status = pyqtSignal(str)
     finished = pyqtSignal()
     error = pyqtSignal(str)
+    sync_report = pyqtSignal(dict)  # emits report dict after each run
 
     def __init__(self, cfg, db=None):
         super().__init__()
@@ -1000,6 +1001,8 @@ class FolderSyncWorker(QThread):
 
             # 3. Execute
             total = len(actions)
+            _start_time = time.monotonic()
+            _stats = {"copied": 0, "deleted": 0, "skipped": 0, "bytes_copied": 0}
             for i, (act, rel_path) in enumerate(actions):
                 if self.is_killed:
                     break
@@ -1022,6 +1025,8 @@ class FolderSyncWorker(QThread):
                         self.status.emit(f"Kopiere -> {rel_path}")
                         os.makedirs(os.path.dirname(t_abs), exist_ok=True)
                         shutil.copy2(s_abs, t_abs)
+                        _stats["copied"] += 1
+                        _stats["bytes_copied"] += os.path.getsize(t_abs) if os.path.exists(t_abs) else 0
                         if self.db:
                             self._db_log(self.db, s_abs, "source")
                             self._db_log(self.db, t_abs, "target")
@@ -1030,6 +1035,8 @@ class FolderSyncWorker(QThread):
                         self.status.emit(f"Kopiere <- {rel_path}")
                         os.makedirs(os.path.dirname(s_abs), exist_ok=True)
                         shutil.copy2(t_abs, s_abs)
+                        _stats["copied"] += 1
+                        _stats["bytes_copied"] += os.path.getsize(s_abs) if os.path.exists(s_abs) else 0
                         if self.db:
                             self._db_log(self.db, s_abs, "source")
 
@@ -1037,21 +1044,37 @@ class FolderSyncWorker(QThread):
                         self.status.emit(f"Lösche Ziel: {rel_path}")
                         if os.path.exists(t_abs):
                             os.remove(t_abs)
+                            _stats["deleted"] += 1
 
-                    elif act == "INDEX_SRC":
-                        if self.db and os.path.exists(s_abs):
-                            self._db_log(self.db, s_abs, "source")
-
-                    elif act == "INDEX_BOTH":
-                        if self.db:
-                            if os.path.exists(s_abs):
+                    elif act in ("INDEX_SRC", "INDEX_BOTH"):
+                        _stats["skipped"] += 1
+                        if act == "INDEX_SRC":
+                            if self.db and os.path.exists(s_abs):
                                 self._db_log(self.db, s_abs, "source")
-                            if t_abs and os.path.exists(t_abs):
-                                self._db_log(self.db, t_abs, "target")
+                        else:
+                            if self.db:
+                                if os.path.exists(s_abs):
+                                    self._db_log(self.db, s_abs, "source")
+                                if t_abs and os.path.exists(t_abs):
+                                    self._db_log(self.db, t_abs, "target")
 
                 except Exception as e:
                     log_error(f"Error {act} on {rel_path}: {e}")
 
+            _duration = time.monotonic() - _start_time
+            report = {
+                "connection": self.cfg.get("name", ""),
+                "connection_id": self.conn_id,
+                "mode": mode,
+                "started_at": datetime.now(timezone.utc).isoformat(),
+                "duration_seconds": round(_duration, 2),
+                "files_copied": _stats["copied"],
+                "files_deleted": _stats["deleted"],
+                "files_skipped": _stats["skipped"],
+                "bytes_copied": _stats["bytes_copied"],
+                "total_actions": total,
+            }
+            self.sync_report.emit(report)
             self.progress.emit(100, "done")
             self.finished.emit()
 
@@ -1897,6 +1920,9 @@ class MainWindow(QMainWindow):
         self.worker.finished.connect(self.worker_finished)
         # V3.2 CHANGED: Error-Handler mit Notification
         self.worker.error.connect(self._handle_worker_error)
+        # Sync-Report speichern
+        if isinstance(self.worker, FolderSyncWorker):
+            self.worker.sync_report.connect(self._save_sync_report)
         self.worker.start()
 
     def _handle_worker_error(self, error_msg: str):
@@ -1931,6 +1957,38 @@ class MainWindow(QMainWindow):
         if self.worker:
             self.worker.kill()
             self.lbl_status.setText("Breche ab...")
+
+    def _save_sync_report(self, report: dict) -> None:
+        """Persist a sync-run report as JSON and keep the last 100 entries."""
+        try:
+            reports_dir = Path(os.environ.get("APPDATA", Path.home())) / "ProSync" / "reports"
+            reports_dir.mkdir(parents=True, exist_ok=True)
+
+            # Load existing log
+            log_file = reports_dir / "sync_log.json"
+            if log_file.exists():
+                with open(log_file, "r", encoding="utf-8") as fh:
+                    all_reports = json.load(fh)
+                if not isinstance(all_reports, list):
+                    all_reports = []
+            else:
+                all_reports = []
+
+            all_reports.append(report)
+            # Keep last 100
+            all_reports = all_reports[-100:]
+
+            with open(log_file, "w", encoding="utf-8") as fh:
+                json.dump(all_reports, fh, ensure_ascii=False, indent=2)
+
+            log_info(
+                f"Sync-Report gespeichert: {report['files_copied']} kopiert, "
+                f"{report['files_deleted']} gelöscht, "
+                f"{report['bytes_copied']:,} Bytes, "
+                f"{report['duration_seconds']}s"
+            )
+        except Exception as exc:
+            log_warning(f"Konnte Sync-Report nicht speichern: {exc}")
 
     def worker_finished(self):
         self.btn_run.setEnabled(True)
